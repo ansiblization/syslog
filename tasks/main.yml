@@ -1,0 +1,7 @@
+---
+
+- name: Include tasks
+  ansible.builtin.include_tasks: "{{ syslog_task }}.yml"
+  loop: ["syslog", "logrotate"]
+  loop_control:
+    loop_var: syslog_task

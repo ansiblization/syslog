@@ -1,0 +1,18 @@
+{% include "common/templates/header.j2" ignore missing %}
+
+{{ syslog_server_directory }}/**/*.log
+{{ syslog_server_directory }}/**/.log
+{
+    missingok
+    {{ syslog_server_logrotate_schedule }}
+    rotate {{ syslog_server_logrotate_keep }}
+{% if syslog_server_logrotate_date %}
+    dateext
+{% endif %}
+{% if syslog_server_logrotate_create %}
+    create
+{% endif %}
+{% if syslog_server_logrotate_compress %}
+    compress
+{% endif %}
+}

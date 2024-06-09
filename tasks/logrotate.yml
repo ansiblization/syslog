@@ -1,0 +1,26 @@
+---
+
+- name: Install logrotate package
+  ansible.builtin.package:
+    name: logrotate
+    state: present
+    update_cache: true
+
+- name: Install logrotate configuration
+  ansible.builtin.template:
+    src: logrotate.conf.j2
+    dest: /etc/logrotate.conf
+    mode: "0o644"
+
+- name: Ensure disabled configuration absent
+  ansible.builtin.file:
+    path: /etc/logrotate.d/ansible-syslog-server
+    state: absent
+  when: not syslog_server
+
+- name: Install logrotate server configuration
+  ansible.builtin.template:
+    src: logrotate-syslog-server.conf.j2
+    dest: /etc/logrotate.d/ansible-syslog-server
+    mode: "0o644"
+  when: syslog_server

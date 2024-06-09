@@ -1,0 +1,37 @@
+{% include "common/templates/header.j2" ignore missing %}
+
+options {
+    keep-hostname({{ syslog_server_keep_hostname | yesno }});
+};
+
+source {{ syslog_network_source }} {
+{% if syslog_server_tcp %}
+    {{ syslog_network_driver }}(
+        ip({{ syslog_server_address }})
+        port({{ syslog_server_port_tcp }})
+        max-connections({{ syslog_server_max_connections }})
+        transport("tcp")
+    );
+{% endif %}
+{% if syslog_server_udp %}
+    {{ syslog_network_driver }}(
+        ip({{ syslog_server_address }})
+        port({{ syslog_server_port_udp }})
+        max-connections({{ syslog_server_max_connections }})
+        transport("udp")
+    );
+{% endif %}
+};
+
+destination {{ syslog_local_destination }} {
+    file(
+        "{{ syslog_server_directory }}/{{ syslog_server_file }}"
+        create_dirs({{ syslog_server_create_dirs | yesno }})
+    );
+};
+
+log {
+    source({{ syslog_local_source }});
+    source({{ syslog_network_source }});
+    destination({{ syslog_local_destination }});
+};

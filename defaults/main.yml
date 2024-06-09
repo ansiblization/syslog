@@ -1,0 +1,39 @@
+---
+
+syslog_owner: root
+syslog_group: adm
+syslog_dir_mode: "0770"
+syslog_file_mode: "0660"
+
+syslog_use_fqdn: true
+syslog_use_dns: false
+syslog_dns_cache: false
+
+syslog_network_driver: syslog
+syslog_network_source: s_network
+syslog_network_destination: d_network
+syslog_local_source: s_src
+syslog_local_destination: d_local
+
+syslog_client_filter_level: null
+syslog_client_remote_server: null
+syslog_client_transport: tcp
+syslog_client_port: 514
+
+syslog_server: false
+syslog_server_tcp: true
+syslog_server_udp: true
+syslog_server_address: 0.0.0.0
+syslog_server_port_tcp: 514
+syslog_server_port_udp: 514
+syslog_server_create_dirs: true
+syslog_server_directory: /var/log/clients
+syslog_server_file: "${HOST}/${FACILITY}.log"
+syslog_server_max_connections: 500
+syslog_server_keep_hostname: true
+
+syslog_server_logrotate_schedule: daily
+syslog_server_logrotate_keep: 7
+syslog_server_logrotate_date: true
+syslog_server_logrotate_create: false
+syslog_server_logrotate_compress: true

@@ -1,0 +1,55 @@
+---
+
+- name: Ensure rsyslog absent
+  ansible.builtin.package:
+    name: rsyslog
+    state: absent
+
+- name: Ensure syslog-ng
+  ansible.builtin.package:
+    name: syslog-ng
+  notify: Enable syslog
+
+- name: Ensure syslog-ng configuration
+  ansible.builtin.template:
+    src: syslog-ng.conf.j2
+    dest: /etc/syslog-ng/syslog-ng.conf
+    mode: "0o644"
+  notify: Restart syslog
+
+- name: Ensure syslog-ng config directory
+  ansible.builtin.file:
+    path: /etc/syslog-ng/conf.d
+    state: directory
+    mode: "0o755"
+
+- name: Ensure disabled configurations absent
+  ansible.builtin.file:
+    path: "{{ syslog_config_file.path }}"
+    state: absent
+  loop:
+    - path: /etc/syslog-ng/conf.d/ansible-syslog-server.conf
+      condition: "{{ syslog_server }}"
+    - path: /etc/syslog-ng/conf.d/ansible-syslog-client.conf
+      condition: "{{ syslog_client_remote_server }}"
+  loop_control:
+    loop_var: syslog_config_file
+  when: not syslog_config_file.condition
+  notify: Restart syslog
+
+- name: Ensure syslog-ng configurations
+  ansible.builtin.template:
+    src: "{{ syslog_config_file.src }}"
+    dest: "{{ syslog_config_file.dest }}"
+    mode: "0o644"
+  loop:
+    - src: syslog-server.conf.j2
+      dest: /etc/syslog-ng/conf.d/ansible-syslog-server.conf
+      condition: "{{ syslog_server }}"
+    - src: syslog-client.conf.j2
+      dest: /etc/syslog-ng/conf.d/ansible-syslog-client.conf
+      condition: "{{ syslog_client_remote_server }}"
+  loop_control:
+    loop_var: syslog_config_file
+  when: syslog_config_file.condition
+  notify: Restart syslog

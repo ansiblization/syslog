@@ -1,0 +1,13 @@
+---
+
+- name: Enable syslog
+  ansible.builtin.systemd_service:
+    name: "{{ syslog_service }}"
+    enabled: true
+    state: started
+
+- name: Restart syslog
+  ansible.builtin.systemd_service:
+    name: "{{ syslog_service }}"
+    enabled: true
+    state: restarted

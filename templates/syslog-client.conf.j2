@@ -1,0 +1,23 @@
+{% include "common/templates/header.j2" ignore missing %}
+
+destination {{ syslog_network_destination }} {
+    {{ syslog_network_driver }}(
+        "{{ syslog_client_remote_server }}"
+        transport("{{ syslog_client_transport }}")
+        port({{ syslog_client_port }})
+    );
+};
+
+{% if syslog_client_filter_level %}
+filter f_client {
+    level({{ syslog_client_filter_level }} .. emerg);
+};
+
+{% endif %}
+log {
+    source({{ syslog_local_source }});
+{% if syslog_client_filter_level %}
+    filter(f_client);
+{% endif %}
+    destination({{ syslog_network_destination }});
+};
