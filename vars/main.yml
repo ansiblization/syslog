@@ -1,4 +1,3 @@
 ---
 
-syslog_service: "{{ 'syslog-ng.service' if ansible_os_family
-  == 'Debian' else 'syslog-ng@default.service' }}"
+syslog_service: syslog-ng.service
