@@ -1,9 +1,9 @@
 ---
 
 - name: Include platform-specific variables
-  ansible.builtin.include_vars: "{{ item }}.yml"
+  ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
-    - files: ["{{ ansible_os_family }}", "default"]
+    - files: ["{{ ansible_os_family }}.yml", "default.yml"]
 
 - name: Include tasks
   ansible.builtin.include_tasks: "{{ syslog_task }}.yml"
